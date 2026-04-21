@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 const REVEAL_SECONDS = 4;
 
 function RevealScreen({ gameState, onComplete }) {
-  const { players, current_round } = gameState;
+  const { players, current_round, eliminated_players } = gameState;
+  const activePlayers = players.filter(p => !eliminated_players.includes(p));
   const [idx, setIdx]               = useState(0);
   const [phase, setPhase]           = useState('wait'); // 'wait' | 'showing' | 'hidden'
   const [timeLeft, setTimeLeft]     = useState(REVEAL_SECONDS);
@@ -25,7 +26,7 @@ function RevealScreen({ gameState, onComplete }) {
   };
 
   const handleNext = () => {
-    if (idx < players.length - 1) {
+    if (idx < activePlayers.length - 1) {
       setIdx(i => i + 1);
       setPhase('wait');
     } else {
@@ -33,10 +34,10 @@ function RevealScreen({ gameState, onComplete }) {
     }
   };
 
-  const currentPlayer = players[idx];
+  const currentPlayer = activePlayers[idx];
   const currentWord   = gameState.words[currentPlayer];
   const barWidth      = phase === 'showing' ? `${(timeLeft / REVEAL_SECONDS) * 100}%` : '100%';
-  const isLast        = idx === players.length - 1;
+  const isLast        = idx === activePlayers.length - 1;
 
   /* ─── WAIT PHASE ─── */
   if (phase === 'wait') return (
@@ -56,7 +57,7 @@ function RevealScreen({ gameState, onComplete }) {
         </button>
       </div>
       <div style={{ textAlign: 'center', marginTop: 15, fontWeight: 800, opacity: 0.5 }}>
-        Player {idx + 1} of {players.length}
+        Player {idx + 1} of {activePlayers.length}
       </div>
     </div>
   );

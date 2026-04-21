@@ -21,7 +21,8 @@ function App() {
     eliminated_players: [],
     current_round: 1,
     game_status: "home", // 'home', 'setup', 'reveal', 'clue', 'voting', 'end'
-    winner: null // 'mrWhite' or 'players'
+    winner: null, // 'mrWhite' or 'players'
+    gameMode: "mutation" // 'mutation' or 'normal'
   });
 
   /* Dynamic Background Handler */
@@ -40,14 +41,17 @@ function App() {
     }
   }, [gameState.game_status]);
 
-  const startGame = (playerNames, difficulty, parasiteHint) => {
+  const startGame = (playerNames, difficulty, parasiteHint, gameMode) => {
     const newPlayers = [...playerNames]; 
     const roles = {};
     const shuffledPlayers = [...newPlayers].sort(() => 0.5 - Math.random());
     const playerCount = newPlayers.length;
 
     roles[shuffledPlayers[0]] = "mrWhite";
-    const numInfected = playerCount >= 6 ? 2 : 1;
+    
+    // In Normal mode, only Civilians and Mr White exist
+    const numInfected = gameMode === "normal" ? 0 : (playerCount >= 6 ? 2 : 1);
+    
     for (let i = 1; i <= numInfected; i++) {
         roles[shuffledPlayers[i]] = "infected";
     }
@@ -92,7 +96,8 @@ function App() {
         eliminated_players: [],
         current_round: 1,
         game_status: "reveal",
-        winner: null
+        winner: null,
+        gameMode: gameMode
     });
   };
 
@@ -106,18 +111,20 @@ function App() {
         const newIndexes = { ...prev.infectedChainIndexes };
         const chains = wordChains[prev.difficulty];
 
-        prev.players.forEach(p => {
-            if (prev.roles[p] === "infected" && !prev.eliminated_players.includes(p)) {
-                const mutationChance = prev.current_round * 0.25; 
-                if (Math.random() < mutationChance) {
-                    const chainLength = chains[prev.mainChainIdx].items.length;
-                    if (newIndexes[p] < chainLength - 1) {
-                        newIndexes[p]++;
-                        newWords[p] = chains[prev.mainChainIdx].items[newIndexes[p]];
+        if (prev.gameMode === "mutation") {
+            prev.players.forEach(p => {
+                if (prev.roles[p] === "infected" && !prev.eliminated_players.includes(p)) {
+                    const mutationChance = prev.current_round * 0.25; 
+                    if (Math.random() < mutationChance) {
+                        const chainLength = chains[prev.mainChainIdx].items.length;
+                        if (newIndexes[p] < chainLength - 1) {
+                            newIndexes[p]++;
+                            newWords[p] = chains[prev.mainChainIdx].items[newIndexes[p]];
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         return {
             ...prev,

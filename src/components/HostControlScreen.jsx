@@ -64,24 +64,46 @@ function HostControlScreen({ gameState, onStartVoting, onNextRound }) {
             Keep it mysterious! If you're too obvious, Mr. White will catch on.
           </p>
 
-          <div style={{
-            background: 'var(--yellow)',
-            border: '3px solid var(--black)',
-            borderRadius: 16,
-            padding: '12px 18px',
-            display: 'flex',
-            gap: 12,
-            alignItems: 'center',
-            boxShadow: '4px 4px 0 var(--black)'
-          }}>
-            <span style={{ fontSize: '1.6rem' }}>⚠️</span>
-            <div>
-              <p style={{ fontWeight: 900, fontSize: '0.8rem' }}>MUTATION ALERT</p>
-              <p style={{ fontWeight: 600, fontSize: '0.75rem', marginTop: 1, opacity: 0.8 }}>
-                Next round may secretly shift words for Infected players!
-              </p>
+          {gameState.gameMode === 'mutation' && (
+            <div style={{
+              background: 'var(--yellow)',
+              border: '3px solid var(--black)',
+              borderRadius: 16,
+              padding: '12px 18px',
+              display: 'flex',
+              gap: 12,
+              alignItems: 'center',
+              boxShadow: '4px 4px 0 var(--black)'
+            }}>
+              <span style={{ fontSize: '1.6rem' }}>⚠️</span>
+              <div>
+                <p style={{ fontWeight: 900, fontSize: '0.8rem' }}>MUTATION ALERT</p>
+                <p style={{ fontWeight: 600, fontSize: '0.75rem', marginTop: 1, opacity: 0.8 }}>
+                  Next round may secretly shift words for Infected players!
+                </p>
+              </div>
             </div>
-          </div>
+          )}
+          
+          {gameState.gameMode === 'normal' && (
+            <div style={{
+              background: 'rgba(131, 56, 236, 0.1)',
+              border: '3px solid var(--purple)',
+              borderRadius: 16,
+              padding: '12px 18px',
+              display: 'flex',
+              gap: 12,
+              alignItems: 'center',
+            }}>
+              <span style={{ fontSize: '1.6rem' }}>👤</span>
+              <div>
+                <p style={{ fontWeight: 900, fontSize: '0.8rem', color: 'var(--purple)' }}>STABLE MODE</p>
+                <p style={{ fontWeight: 600, fontSize: '0.75rem', marginTop: 1, opacity: 0.8, color: 'var(--purple)' }}>
+                  Words remain locked for the entire session. No shifts.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Actions */}

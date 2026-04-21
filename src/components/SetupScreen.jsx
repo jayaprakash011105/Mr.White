@@ -6,6 +6,8 @@ function SetupScreen({ onStart }) {
   const [difficulty, setDifficulty] = useState('medium');
   const [mrWhiteHint, setMrWhiteHint] = useState('mrWhite');
 
+  const [gameMode, setGameMode] = useState('mutation');
+
   const addPlayer = () => {
     const trimmed = name.trim();
     if (trimmed && players.length < 10 && !players.includes(trimmed)) {
@@ -20,7 +22,7 @@ function SetupScreen({ onStart }) {
 
   const handleStart = () => {
     if (players.length >= 4) {
-      onStart(players, difficulty, mrWhiteHint);
+      onStart(players, difficulty, mrWhiteHint, gameMode);
     }
   };
 
@@ -35,7 +37,28 @@ function SetupScreen({ onStart }) {
         <h2 className="title-medium" style={{ fontSize: '1.8rem', marginBottom: 20 }}>Session Config</h2>
         
         {/* Config Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15, marginBottom: 25 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15, marginBottom: 15 }}>
+           {/* Game Mode Block */}
+           <div style={{ background: 'rgba(0,0,0,0.03)', padding: 15, borderRadius: 18, border: '3px solid var(--black)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)', gridColumn: 'span 2' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 900, marginBottom: 10, textAlign: 'center', letterSpacing: 1, color: 'var(--black)' }}>GAME MODE</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <button
+                className={`btn ${gameMode === 'mutation' ? 'btn-secondary' : 'btn-white'}`}
+                style={{ padding: '12px', fontSize: '0.85rem', border: '2px solid var(--black)', borderRadius: 12 }}
+                onClick={() => setGameMode('mutation')}
+              >
+                MUTATION 🧬
+              </button>
+              <button
+                className={`btn ${gameMode === 'normal' ? 'btn-secondary' : 'btn-white'}`}
+                style={{ padding: '12px', fontSize: '0.85rem', border: '2px solid var(--black)', borderRadius: 12 }}
+                onClick={() => setGameMode('normal')}
+              >
+                NORMAL 👤
+              </button>
+            </div>
+          </div>
+
           {/* Difficulty Block */}
           <div style={{ background: 'rgba(0,0,0,0.03)', padding: 15, borderRadius: 18, border: '3px solid var(--black)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: 900, marginBottom: 10, textAlign: 'center', letterSpacing: 1, color: 'var(--black)' }}>DIFFICULTY</p>
