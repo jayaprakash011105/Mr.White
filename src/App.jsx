@@ -187,9 +187,11 @@ function App() {
       {gameState.game_status === "end" && <EndScreen gameState={gameState} onRestart={restartGame} />}
 
       {/* Global Elements */}
-      <button className="help-btn" onClick={() => setIsRulesOpen(true)} title="Rules">
-        ?
-      </button>
+      {gameState.game_status === "home" && (
+        <button className="help-btn" onClick={() => setIsRulesOpen(true)} title="Rules">
+          ?
+        </button>
+      )}
 
       <div className="scoreboard">
         <div className="score-tag">⬜ {scores.mrWhite}</div>

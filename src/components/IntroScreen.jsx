@@ -3,7 +3,7 @@ import React from 'react';
 function IntroScreen({ onEnter }) {
   return (
     <div className="pop-in" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      <div style={{ textAlign: 'center' }}>
+      <div className="animate-float" style={{ textAlign: 'center' }}>
           <h1 className="title-large">MR.<br/>WHITE</h1>
           <p style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--purple)', marginTop: -5 }}>
             THE PARTY GAME OF LIES! 🤫

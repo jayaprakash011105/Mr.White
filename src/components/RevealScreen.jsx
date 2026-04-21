@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const REVEAL_SECONDS = 4;
+const REVEAL_SECONDS = 2;
 
 function RevealScreen({ gameState, onComplete }) {
   const { players, current_round, eliminated_players } = gameState;

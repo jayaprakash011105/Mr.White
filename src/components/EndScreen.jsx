@@ -8,7 +8,7 @@ function EndScreen({ gameState, onRestart }) {
   return (
     <div className="pop-in" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div className={`outcome-banner ${isMrWhiteWin ? 'mrwhite-win' : 'players-win'}`} style={{ textAlign: 'center' }}>
-        <span style={{ fontSize: '5rem' }}>{isMrWhiteWin ? "👾" : "🛡️"}</span>
+        <div className="animate-float" style={{ fontSize: '5rem', marginBottom: 10 }}>{isMrWhiteWin ? "👾" : "🛡️"}</div>
         <h2 className="title-medium" style={{ color: 'white', fontSize: '2.5rem', marginBottom: 10 }}>
           {isMrWhiteWin ? "MR. WHITE WINS!" : "HUMANS WIN!"}
         </h2>
@@ -20,7 +20,7 @@ function EndScreen({ gameState, onRestart }) {
       <div className="glass-card">
         <span className="label-caps">Final Results</span>
         <div className="results-list" style={{ marginTop: 15 }}>
-          {players.map(p => {
+          {players.map((p, i) => {
               const isEliminated = eliminated_players.includes(p);
               const role = roles[p];
               let roleColor = 'var(--blue)'; // Stable
@@ -28,7 +28,7 @@ function EndScreen({ gameState, onRestart }) {
               if (role === 'infected') roleColor = 'var(--orange)';
 
               return (
-                <div key={p} className="result-row" style={{ opacity: isEliminated ? 0.4 : 1, padding: '12px 0', borderBottom: '2px solid var(--black)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={p} className={`result-row stagger-item stagger-${(i % 5) + 1}`} style={{ opacity: isEliminated ? 0.4 : 1, padding: '12px 0', borderBottom: '2px solid var(--black)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div className="result-info">
                     <div style={{ fontWeight: 900, fontSize: '1.2rem' }}>
                         {p} {isEliminated && "💀"}

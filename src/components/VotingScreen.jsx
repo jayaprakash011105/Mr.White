@@ -31,10 +31,10 @@ function VotingScreen({ gameState, onVote, onCancel }) {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          {activePlayers.map(p => (
+          {activePlayers.map((p, i) => (
             <div
               key={p}
-              className={`player-vote-card ${selected === p ? 'selected' : ''}`}
+              className={`player-vote-card stagger-item stagger-${(i % 5) + 1} ${selected === p ? 'selected' : ''}`}
               onClick={() => { setSelected(p); setConfirming(false); }}
               style={{ cursor: 'pointer' }}
             >
