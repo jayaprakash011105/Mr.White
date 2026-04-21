@@ -7,8 +7,8 @@ function EndScreen({ gameState, onRestart }) {
 
   return (
     <div className="pop-in" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      <div className={`outcome-banner ${isMrWhiteWin ? 'mrwhite-win' : 'players-win'}`} style={{ textAlign: 'center' }}>
-        <div className="animate-float" style={{ fontSize: '5rem', marginBottom: 10 }}>{isMrWhiteWin ? "👾" : "🛡️"}</div>
+      <div className={`outcome-banner animate-winner ${isMrWhiteWin ? 'mrwhite-win' : 'players-win'}`} style={{ textAlign: 'center' }}>
+        <span style={{ fontSize: '5rem', display: 'block' }}>{isMrWhiteWin ? "👾" : "🛡️"}</span>
         <h2 className="title-medium" style={{ color: 'white', fontSize: '2.5rem', marginBottom: 10 }}>
           {isMrWhiteWin ? "MR. WHITE WINS!" : "HUMANS WIN!"}
         </h2>
@@ -28,7 +28,19 @@ function EndScreen({ gameState, onRestart }) {
               if (role === 'infected') roleColor = 'var(--orange)';
 
               return (
-                <div key={p} className={`result-row stagger-item stagger-${(i % 5) + 1}`} style={{ opacity: isEliminated ? 0.4 : 1, padding: '12px 0', borderBottom: '2px solid var(--black)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div 
+                  key={p} 
+                  className="result-row animate-slide-up" 
+                  style={{ 
+                    opacity: isEliminated ? 0.4 : 1, 
+                    padding: '12px 0', 
+                    borderBottom: '2px solid var(--black)', 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    animationDelay: `${i * 0.1}s`
+                  }}
+                >
                   <div className="result-info">
                     <div style={{ fontWeight: 900, fontSize: '1.2rem' }}>
                         {p} {isEliminated && "💀"}
@@ -46,7 +58,7 @@ function EndScreen({ gameState, onRestart }) {
         </div>
       </div>
 
-      <button className="btn btn-primary" onClick={onRestart}>
+      <button className="btn btn-primary animate-pulse" onClick={onRestart} style={{ marginTop: 10 }}>
         PLAY AGAIN! 🔄
       </button>
     </div>

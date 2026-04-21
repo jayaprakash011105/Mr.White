@@ -252,7 +252,6 @@ body.voting-mode {
   background: var(--pink);
   height: 100%;
   transition: width 1s linear;
-  box-shadow: 0 0 15px var(--pink);
 }
 
 .player-vote-card {
@@ -264,18 +263,12 @@ body.voting-mode {
   justify-content: space-between;
   align-items: center;
   font-weight: 700;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.player-vote-card:hover {
-  transform: scale(1.03) rotate(-1deg);
-  background: var(--yellow);
+  transition: 0.2s;
 }
 
 .player-vote-card.selected {
   background: var(--yellow);
-  transform: scale(1.05) rotate(1deg);
-  box-shadow: var(--btn-shadow);
+  transform: scale(1.02);
 }
 
 .outcome-banner {
@@ -357,45 +350,32 @@ body.voting-mode {
   to { opacity: 1; }
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+/* Arcade Animations */
+@keyframes winnerBounce {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.1); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px) rotate(-1deg); }
-  75% { transform: translateX(5px) rotate(1deg); }
+@keyframes slideUpRow {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes bg-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes pulseButton {
+  0% { transform: scale(1); box-shadow: var(--btn-shadow); }
+  100% { transform: scale(1.05); box-shadow: 6px 6px 0px var(--black); }
 }
 
-.animate-float { animation: float 3s ease-in-out infinite; }
-.animate-shake { animation: shake 0.3s ease-in-out infinite; }
-.animate-pulse { animation: pop 0.4s infinite alternate; }
-
-.stagger-item {
-  opacity: 0;
-  animation: slideUp 0.4s ease-out forwards;
+@keyframes rainbowBorder {
+  0% { border-color: var(--pink); }
+  33% { border-color: var(--blue); }
+  66% { border-color: var(--yellow); }
+  100% { border-color: var(--pink); }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-
-body {
-  background-size: 200% 200%;
-  animation: bg-shift 15s ease infinite;
-}
+.animate-winner { animation: winnerBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+.animate-slide-up { animation: slideUpRow 0.4s ease-out both; }
+.animate-pulse { animation: pulseButton 0.8s infinite alternate ease-in-out; }
+.animate-rainbow { animation: rainbowBorder 2s infinite linear; }
