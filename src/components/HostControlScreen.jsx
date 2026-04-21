@@ -10,16 +10,16 @@ const PSYCH_LINES = [
   "The Infected don't know they've changed.",
 ];
 
-function HostControlScreen({ gameState, onStartVoting, onNextRound }) {
+function HostControlScreen({ gameState, discussionTime, onStartVoting, onNextRound }) {
   const { players, eliminated_players, current_round } = gameState;
   const activePlayers = players.filter(p => !eliminated_players.includes(p));
   const [psychLine, setPsychLine] = useState(PSYCH_LINES[0]);
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(discussionTime);
 
   useEffect(() => {
     const line = PSYCH_LINES[Math.floor(Math.random() * PSYCH_LINES.length)];
     setPsychLine(line);
-    setTimeLeft(60); // Reset timer each round
+    setTimeLeft(discussionTime); // Reset timer each round
   }, [current_round]);
 
   useEffect(() => {
@@ -131,7 +131,7 @@ function HostControlScreen({ gameState, onStartVoting, onNextRound }) {
           </div>
           <div className="timer-bar-wrap">
             <div className="timer-bar" style={{ 
-              width: `${(timeLeft / 60) * 100}%`,
+              width: `${(timeLeft / discussionTime) * 100}%`,
               backgroundColor: timeLeft < 10 ? 'var(--pink)' : 'var(--blue)' 
             }}></div>
           </div>

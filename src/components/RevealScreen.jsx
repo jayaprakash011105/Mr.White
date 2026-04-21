@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 
-const REVEAL_SECONDS = 2;
-
-function RevealScreen({ gameState, onComplete }) {
+function RevealScreen({ gameState, revealTime, onComplete }) {
   const { players, current_round, eliminated_players } = gameState;
   const activePlayers = players.filter(p => !eliminated_players.includes(p));
   const [idx, setIdx]               = useState(0);
   const [phase, setPhase]           = useState('wait'); // 'wait' | 'showing' | 'hidden'
-  const [timeLeft, setTimeLeft]     = useState(REVEAL_SECONDS);
+  const [timeLeft, setTimeLeft]     = useState(revealTime);
 
   /* countdown while showing */
   useEffect(() => {
@@ -22,7 +20,7 @@ function RevealScreen({ gameState, onComplete }) {
 
   const handleReveal = () => {
     setPhase('showing');
-    setTimeLeft(REVEAL_SECONDS);
+    setTimeLeft(revealTime);
   };
 
   const handleNext = () => {
@@ -36,7 +34,7 @@ function RevealScreen({ gameState, onComplete }) {
 
   const currentPlayer = activePlayers[idx];
   const currentWord   = gameState.words[currentPlayer];
-  const barWidth      = phase === 'showing' ? `${(timeLeft / REVEAL_SECONDS) * 100}%` : '100%';
+  const barWidth      = phase === 'showing' ? `${(timeLeft / revealTime) * 100}%` : '100%';
   const isLast        = idx === activePlayers.length - 1;
 
   /* ─── WAIT PHASE ─── */

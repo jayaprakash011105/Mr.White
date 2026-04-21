@@ -5,6 +5,8 @@ import RevealScreen from './components/RevealScreen';
 import HostControlScreen from './components/HostControlScreen';
 import VotingScreen from './components/VotingScreen';
 import EndScreen from './components/EndScreen';
+import EliminationResultScreen from './components/EliminationResultScreen';
+import SettingsModal from './components/SettingsModal';
 import { wordChains, getRandomPair } from './game/words';
 import RulesModal from './components/RulesModal';
 import './index.css';
@@ -21,13 +23,29 @@ function App() {
     currentCategory: "",
     eliminated_players: [],
     current_round: 1,
-    game_status: "home", // 'home', 'setup', 'reveal', 'clue', 'voting', 'end'
+    game_status: "home", // 'home', 'setup', 'reveal', 'clue', 'voting', 'end', 'eliminated'
     winner: null, // 'mrWhite' or 'players'
-    gameMode: "mutation" // 'mutation' or 'normal'
+    gameMode: "mutation", // 'mutation' or 'normal'
+    lastEliminated: null
   });
 
   const [scores, setScores] = useState({ mrWhite: 0, players: 0 });
   const [isRulesOpen, setIsRulesOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [gameSettings, setGameSettings] = useState({
+    revealTime: 2,
+    discussionTime: 60,
+    animations: true,
+    highContrast: false
+  });
+
+  const updateSetting = (key, value) => {
+    setGameSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const resetSessionScores = () => {
+    setScores({ mrWhite: 0, players: 0 });
+  };
 
   /* Dynamic Background Handler */
   useEffect(() => {
@@ -44,6 +62,12 @@ function App() {
       document.body.classList.add('voting-mode');
     }
   }, [gameState.game_status]);
+
+  /* Global Settings Handler */
+  useEffect(() => {
+    document.body.classList.toggle('high-contrast-mode', gameSettings.highContrast);
+    document.body.classList.toggle('no-animations', !gameSettings.animations);
+  }, [gameSettings.highContrast, gameSettings.animations]);
 
   const startGame = (playerNames, difficulty, parasiteHint, gameMode) => {
     const newPlayers = [...playerNames]; 
@@ -144,16 +168,14 @@ function App() {
       setGameState(prev => {
           const newEliminated = [...prev.eliminated_players, player];
           const activePlayersCount = prev.players.length - newEliminated.length;
-          
-          let newStatus = "clue";
           let winner = null;
-
+          
           if (prev.roles[player] === "mrWhite") {
-              newStatus = "end";
+              // Mr White caught
               winner = "players";
               setScores(s => ({ ...s, players: s.players + 1 }));
           } else if (activePlayersCount <= 2) {
-              newStatus = "end";
+              // Too few humans left
               winner = "mrWhite";
               setScores(s => ({ ...s, mrWhite: s.mrWhite + 1 }));
           }
@@ -161,10 +183,19 @@ function App() {
           return {
               ...prev,
               eliminated_players: newEliminated,
-              game_status: newStatus,
-              winner
+              game_status: "eliminated",
+              winner,
+              lastEliminated: player
           };
       });
+  };
+
+  const handleEliminationContinue = () => {
+    setGameState(prev => ({
+        ...prev,
+        game_status: prev.winner ? "end" : "clue",
+        lastEliminated: null
+    }));
   };
 
   const restartGame = () => {
@@ -181,24 +212,48 @@ function App() {
 
       {gameState.game_status === "home" && <IntroScreen onEnter={() => advanceGameStatus("setup")} />}
       {gameState.game_status === "setup" && <SetupScreen onStart={startGame} />}
-      {gameState.game_status === "reveal" && <RevealScreen gameState={gameState} onComplete={() => advanceGameStatus("clue")} />}
-      {gameState.game_status === "clue" && <HostControlScreen gameState={gameState} onStartVoting={() => advanceGameStatus("voting")} onNextRound={nextRound} />}
+      {gameState.game_status === "reveal" && <RevealScreen gameState={gameState} revealTime={gameSettings.revealTime} onComplete={() => advanceGameStatus("clue")} />}
+      {gameState.game_status === "clue" && <HostControlScreen gameState={gameState} discussionTime={gameSettings.discussionTime} onStartVoting={() => advanceGameStatus("voting")} onNextRound={nextRound} />}
       {gameState.game_status === "voting" && <VotingScreen gameState={gameState} onVote={eliminatePlayer} onCancel={() => advanceGameStatus("clue")} />}
       {gameState.game_status === "end" && <EndScreen gameState={gameState} onRestart={restartGame} />}
 
-      {/* Global Elements */}
-      {gameState.game_status === "home" && (
-        <button className="help-btn" onClick={() => setIsRulesOpen(true)} title="Rules">
-          ?
-        </button>
+      {gameState.game_status === "eliminated" && (
+        <EliminationResultScreen 
+          player={gameState.lastEliminated} 
+          role={gameState.roles[gameState.lastEliminated]} 
+          onContinue={handleEliminationContinue} 
+        />
       )}
 
-      <div className="scoreboard">
-        <div className="score-tag">⬜ {scores.mrWhite}</div>
-        <div className="score-tag">👥 {scores.players}</div>
-      </div>
+      {/* Header UI Controls */}
+      {gameState.game_status === "home" && (
+        <div className="header-controls">
+          <button className="settings-btn" onClick={() => setIsSettingsOpen(true)} title="Settings">
+            ⚙️
+          </button>
+          <button className="help-btn" onClick={() => setIsRulesOpen(true)} title="Rules">
+            ?
+          </button>
+        </div>
+      )}
+
+      {/* Scoreboard - Visible during game flow but hidden on home to show settings */}
+      {gameState.game_status !== "home" && (
+        <div className="scoreboard">
+          <div className="score-tag">⬜ {scores.mrWhite}</div>
+          <div className="score-tag">👥 {scores.players}</div>
+        </div>
+      )}
 
       <RulesModal isOpen={isRulesOpen} onClose={() => setIsRulesOpen(false)} />
+      
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        settings={gameSettings}
+        onUpdate={updateSetting}
+        onResetScores={resetSessionScores}
+      />
     </>
   );
 }
