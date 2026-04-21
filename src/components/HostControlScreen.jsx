@@ -14,11 +14,21 @@ function HostControlScreen({ gameState, onStartVoting, onNextRound }) {
   const { players, eliminated_players, current_round } = gameState;
   const activePlayers = players.filter(p => !eliminated_players.includes(p));
   const [psychLine, setPsychLine] = useState(PSYCH_LINES[0]);
+  const [timeLeft, setTimeLeft] = useState(60);
 
   useEffect(() => {
     const line = PSYCH_LINES[Math.floor(Math.random() * PSYCH_LINES.length)];
     setPsychLine(line);
+    setTimeLeft(60); // Reset timer each round
   }, [current_round]);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const interval = setInterval(() => {
+      setTimeLeft(t => Math.max(0, t - 1));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timeLeft]);
 
   return (
     <div className="pop-in">
@@ -104,6 +114,27 @@ function HostControlScreen({ gameState, onStartVoting, onNextRound }) {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Timer Feature */}
+        <div style={{ marginTop: 5 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 900, color: 'var(--black)', opacity: 0.7 }}>TIME TO CLUE</span>
+            <span style={{ 
+              fontSize: '1.1rem', 
+              fontWeight: 900, 
+              color: timeLeft < 10 ? 'var(--pink)' : 'var(--blue)',
+              animation: timeLeft < 10 ? 'pop 0.5s infinite alternate' : 'none'
+            }}>
+              00:{timeLeft < 10 ? `0${timeLeft}` : timeLeft} ⏱️
+            </span>
+          </div>
+          <div className="timer-bar-wrap">
+            <div className="timer-bar" style={{ 
+              width: `${(timeLeft / 60) * 100}%`,
+              backgroundColor: timeLeft < 10 ? 'var(--pink)' : 'var(--blue)' 
+            }}></div>
+          </div>
         </div>
 
         {/* Actions */}

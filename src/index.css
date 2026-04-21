@@ -288,3 +288,64 @@ body.voting-mode {
   100% { transform: scale(1); }
 }
 .pop-in { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+/* ═══════════════════════════════════════════
+   NEW FEATURES: HELP & SCOREBOARD
+   ═══════════════════════════════════════════ */
+
+.help-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  background: var(--yellow);
+  border: 3px solid var(--black);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 4px 4px 0px var(--black);
+  transition: transform 0.1s;
+}
+
+.help-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--black);
+}
+
+.scoreboard {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: var(--black);
+  z-index: 99;
+  box-shadow: 3px 3px 0px var(--black);
+  display: flex;
+  gap: 10px;
+}
+
+.score-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-overlay {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

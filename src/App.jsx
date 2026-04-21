@@ -6,6 +6,7 @@ import HostControlScreen from './components/HostControlScreen';
 import VotingScreen from './components/VotingScreen';
 import EndScreen from './components/EndScreen';
 import { wordChains, getRandomPair } from './game/words';
+import RulesModal from './components/RulesModal';
 import './index.css';
 
 function App() {
@@ -24,6 +25,9 @@ function App() {
     winner: null, // 'mrWhite' or 'players'
     gameMode: "mutation" // 'mutation' or 'normal'
   });
+
+  const [scores, setScores] = useState({ mrWhite: 0, players: 0 });
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
 
   /* Dynamic Background Handler */
   useEffect(() => {
@@ -147,9 +151,11 @@ function App() {
           if (prev.roles[player] === "mrWhite") {
               newStatus = "end";
               winner = "players";
+              setScores(s => ({ ...s, players: s.players + 1 }));
           } else if (activePlayersCount <= 2) {
               newStatus = "end";
               winner = "mrWhite";
+              setScores(s => ({ ...s, mrWhite: s.mrWhite + 1 }));
           }
 
           return {
@@ -179,6 +185,18 @@ function App() {
       {gameState.game_status === "clue" && <HostControlScreen gameState={gameState} onStartVoting={() => advanceGameStatus("voting")} onNextRound={nextRound} />}
       {gameState.game_status === "voting" && <VotingScreen gameState={gameState} onVote={eliminatePlayer} onCancel={() => advanceGameStatus("clue")} />}
       {gameState.game_status === "end" && <EndScreen gameState={gameState} onRestart={restartGame} />}
+
+      {/* Global Elements */}
+      <button className="help-btn" onClick={() => setIsRulesOpen(true)} title="Rules">
+        ?
+      </button>
+
+      <div className="scoreboard">
+        <div className="score-tag">⬜ {scores.mrWhite}</div>
+        <div className="score-tag">👥 {scores.players}</div>
+      </div>
+
+      <RulesModal isOpen={isRulesOpen} onClose={() => setIsRulesOpen(false)} />
     </>
   );
 }

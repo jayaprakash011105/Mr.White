@@ -8,6 +8,25 @@ function SetupScreen({ onStart }) {
 
   const [gameMode, setGameMode] = useState('mutation');
 
+  const randomNames = ["Blade", "Echo", "Falcon", "Ghost", "Hunter", "Ivy", "Joker", "Knight", "Luna", "Nova", "Orbit", "Panda", "Quartz", "River", "Storm", "Titan", "Viper", "Wolf", "Xenon", "Yeti", "Zion"];
+
+  const addRandomRecruit = () => {
+    if (players.length >= 12) return;
+    const available = randomNames.filter(n => !players.includes(n));
+    if (available.length > 0) {
+      const rand = available[Math.floor(Math.random() * available.length)];
+      setPlayers([...players, rand]);
+    }
+  };
+
+  const getLobbyAdvice = () => {
+    if (players.length < 4) return "Recruit at least 4 players to begin the mission.";
+    if (difficulty === 'hard' && players.length <= 5) return "Hard mode with few players? Mr. White might find it easy to blend in!";
+    if (gameMode === 'mutation' && players.length >= 8) return "Mutation mode with many players! Chaos is guaranteed.";
+    if (difficulty === 'easy') return "Perfect for new recruits. Focus on finding Mr. White!";
+    return "The mission is ready. Good luck, Humans.";
+  };
+
   const addPlayer = () => {
     const trimmed = name.trim();
     if (trimmed && players.length < 10 && !players.includes(trimmed)) {
@@ -115,9 +134,18 @@ function SetupScreen({ onStart }) {
               className="btn btn-secondary" 
               style={{ width: 'auto', padding: '0 20px', border: '3px solid var(--black)' }}
               onClick={addPlayer}
-              disabled={!name.trim() || players.length >= 10}
+              disabled={!name.trim() || players.length >= 12}
             >
               ADD
+            </button>
+            <button 
+              className="btn btn-white" 
+              style={{ width: 'auto', padding: '0 15px', border: '3px solid var(--black)', fontSize: '1.4rem' }}
+              onClick={addRandomRecruit}
+              title="Random Recruit"
+              disabled={players.length >= 12}
+            >
+              🎲
             </button>
           </div>
         </div>
@@ -127,7 +155,7 @@ function SetupScreen({ onStart }) {
             <p style={{ opacity: 0.5, fontStyle: 'italic', fontSize: '0.9rem' }}>Waiting for recruits...</p>
           )}
           {players.map(p => (
-            <div key={p} className="player-bubble" style={{ fontSize: '1rem', padding: '8px 16px' }}>
+            <div key={p} className="player-bubble" style={{ fontSize: '1rem', padding: '8px 16px', animation: 'pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
               {p}
               <button 
                 className="remove-btn" 
@@ -138,6 +166,21 @@ function SetupScreen({ onStart }) {
               </button>
             </div>
           ))}
+        </div>
+
+        {/* Advice Area */}
+        <div style={{ 
+          marginTop: 15, 
+          padding: '10px 15px', 
+          background: 'rgba(0,0,0,0.05)', 
+          borderRadius: 12, 
+          textAlign: 'center',
+          fontSize: '0.8rem',
+          fontWeight: 700,
+          color: 'var(--black)',
+          opacity: 0.8
+        }}>
+          💡 {getLobbyAdvice()}
         </div>
       </div>
       
