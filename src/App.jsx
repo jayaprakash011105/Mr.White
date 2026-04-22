@@ -9,7 +9,6 @@ import EliminationResultScreen from './components/EliminationResultScreen';
 import SettingsModal from './components/SettingsModal';
 import { wordChains, getRandomPair } from './game/words';
 import RulesModal from './components/RulesModal';
-import RulesModal from './components/RulesModal';
 import './index.css';
 
 function App() {
