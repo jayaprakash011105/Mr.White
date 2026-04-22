@@ -79,17 +79,24 @@ function SettingsModal({ isOpen, onClose, settings, onUpdate, onResetScores }) {
           </div>
 
           {/* Theme/Visual Options */}
-          <div style={{ display: 'flex', gap: 15 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 15 }}>
+             <button 
+                className={`btn ${settings.audio ? 'btn-secondary' : 'btn-white'}`}
+                style={{ padding: '12px', fontSize: '0.8rem', flex: '1 1 40%' }}
+                onClick={() => onUpdate('audio', !settings.audio)}
+             >
+               AUDIO: {settings.audio ? 'ON' : 'OFF'}
+             </button>
              <button 
                 className={`btn ${settings.highContrast ? 'btn-secondary' : 'btn-white'}`}
-                style={{ padding: '12px', fontSize: '0.8rem', flex: 1 }}
+                style={{ padding: '12px', fontSize: '0.8rem', flex: '1 1 40%' }}
                 onClick={() => onUpdate('highContrast', !settings.highContrast)}
              >
                {settings.highContrast ? 'CONTRAST: ON' : 'CONTRAST: OFF'}
              </button>
              <button 
                 className={`btn ${settings.animations ? 'btn-secondary' : 'btn-white'}`}
-                style={{ padding: '12px', fontSize: '0.8rem', flex: 1 }}
+                style={{ padding: '12px', fontSize: '0.8rem', width: '100%' }}
                 onClick={() => onUpdate('animations', !settings.animations)}
              >
                ANIMATIONS: {settings.animations ? 'ON' : 'OFF'}

@@ -65,6 +65,12 @@ body.voting-mode {
     url('./assets/bg-vote.jpg');
 }
 
+body.end-mode {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url('./assets/bg-end.jpg');
+}
+
 #root {
   width: 100%;
   max-width: 480px;
