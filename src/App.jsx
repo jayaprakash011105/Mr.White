@@ -9,7 +9,7 @@ import EliminationResultScreen from './components/EliminationResultScreen';
 import SettingsModal from './components/SettingsModal';
 import { wordChains, getRandomPair } from './game/words';
 import RulesModal from './components/RulesModal';
-import { sounds, BGM_URLS } from './game/audio';
+import RulesModal from './components/RulesModal';
 import './index.css';
 
 function App() {
@@ -37,41 +37,34 @@ function App() {
     revealTime: 2,
     discussionTime: 60,
     animations: true,
-    highContrast: false,
-    audio: true
+    animations: true,
+    highContrast: false
   });
 
   const updateSetting = (key, value) => {
     setGameSettings(prev => ({ ...prev, [key]: value }));
-    if (key === 'audio') {
-      sounds.setMuted(!value);
-    }
   };
 
   const resetSessionScores = () => {
     setScores({ mrWhite: 0, players: 0 });
   };
 
-  /* Dynamic Background & Audio Handler */
+  /* Dynamic Background Handler */
   useEffect(() => {
     document.body.classList.remove('home-mode', 'lobby-mode', 'reveal-mode', 'discussion-mode', 'voting-mode', 'end-mode');
     
     if (gameState.game_status === "home") {
       document.body.classList.add('home-mode');
-      sounds.playBgm(BGM_URLS.HOME);
     } else if (gameState.game_status === "setup") {
       document.body.classList.add('lobby-mode');
     } else if (gameState.game_status === "reveal") {
       document.body.classList.add('reveal-mode');
-      sounds.playBgm(BGM_URLS.GAME);
     } else if (gameState.game_status === "clue") {
       document.body.classList.add('discussion-mode');
     } else if (gameState.game_status === "voting") {
       document.body.classList.add('voting-mode');
-      sounds.playBgm(BGM_URLS.VOTING);
     } else if (gameState.game_status === "end") {
       document.body.classList.add('end-mode');
-      sounds.playBgm(BGM_URLS.HOME);
     }
   }, [gameState.game_status]);
 
@@ -142,13 +135,10 @@ function App() {
   };
 
   const advanceGameStatus = (newStatus) => {
-      sounds.init(); // Initialize audio context on first click
-      sounds.playSfx('click');
       setGameState(prev => ({ ...prev, game_status: newStatus }));
   };
 
   const nextRound = () => {
-    sounds.playSfx('mutation');
     setGameState(prev => {
         const newWords = { ...prev.words };
         const newIndexes = { ...prev.infectedChainIndexes };
@@ -189,14 +179,10 @@ function App() {
               // Mr White caught
               winner = "players";
               setScores(s => ({ ...s, players: s.players + 1 }));
-              sounds.playSfx('win');
           } else if (activePlayersCount <= 2) {
               // Too few humans left
               winner = "mrWhite";
               setScores(s => ({ ...s, mrWhite: s.mrWhite + 1 }));
-              sounds.playSfx('win');
-          } else {
-              sounds.playSfx('eliminate');
           }
 
           return {
